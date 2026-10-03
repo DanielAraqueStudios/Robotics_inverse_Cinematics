@@ -1,0 +1,69 @@
+/* Estilos de las pestañas de examen. Se añaden al final de style.qss. */
+
+QLabel#badge {
+    padding: 4px 12px;
+    border-radius: 11px;
+    background-color: #1F2937;
+    color: #94A3B8;
+    font-weight: 600;
+}
+QLabel#badge[state="ok"] { background-color: #052E22; color: #34D399; }
+QLabel#badge[state="info"] { background-color: #0C2A3A; color: #4CC9F0; }
+QLabel#badge[state="warn"] { background-color: #3B2A05; color: #FFB703; }
+QLabel#badge[state="error"] { background-color: #3A0D18; color: #F72585; }
+
+QFrame#card {
+    background-color: #151C25;
+    border: 1px solid #1F2937;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+QLabel#cardTitle, QLabel#cardText, QLabel#check, QLabel#section {
+    background: transparent;
+}
+QLabel#cardTitle {
+    color: #E2E8F0;
+    font-size: 14px;
+    font-weight: 700;
+    padding-bottom: 4px;
+}
+QLabel#cardText {
+    color: #CBD5E1;
+    padding: 2px 0;
+}
+QLabel#check {
+    font-size: 14px;
+    padding: 4px 0;
+}
+QLabel#check[state="ok"] { color: #34D399; }
+QLabel#check[state="error"] { color: #F72585; }
+QLabel#check[state="muted"] { color: #94A3B8; }
+
+QTableWidget {
+    background-color: #0F172A;
+    alternate-background-color: #111827;
+    border: 1px solid #1F2937;
+    border-radius: 8px;
+    gridline-color: #1F2937;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+}
+QTableWidget#matrix {
+    border-left: 3px solid #22D3EE;
+    border-right: 3px solid #22D3EE;
+}
+QTableWidget QHeaderView {
+    background-color: #111827;
+}
+QTableWidget QHeaderView::section {
+    background-color: #111827;
+    color: #4CC9F0;
+    border: none;
+    padding: 4px 8px;
+    font-weight: 700;
+}
+QTableWidget QTableCornerButton::section {
+    background-color: #111827;
+    border: none;
+}
