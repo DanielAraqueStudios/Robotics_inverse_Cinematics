@@ -1,0 +1,10 @@
+numpy
+scipy
+sympy
+fastapi
+uvicorn
+pydantic
+PyQt6
+matplotlib
+httpx
+pytest
