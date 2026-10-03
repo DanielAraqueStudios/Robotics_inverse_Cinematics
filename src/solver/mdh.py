@@ -77,16 +77,30 @@ def joint_params_mdh(joint: Joint, qi: float) -> tuple[float, float]:
     return joint.theta, joint.d + qi
 
 
+def _tool_matrix_mdh(robot: Robot, tool: tuple[float, float] | None) -> np.ndarray | None:
+    """Marco de herramienta en DH modificada.
+
+    Un argumento explícito tool = (alpha, a) conserva su significado antiguo; si es None se
+    usa robot.tool (theta, d, a, alpha) cuando existe; si no, no hay marco extra.
+    """
+    if tool is not None:
+        alpha, a = tool
+        return mdh_matrix(0.0, 0.0, a, alpha)
+    if robot.has_tool:
+        return mdh_matrix(*robot.tool)
+    return None
+
+
 def link_matrices_mdh(robot: Robot, q, tool: tuple[float, float] | None = None) -> list[np.ndarray]:
-    """Matrices T_{i-1,i} de cada eslabón (y del marco de herramienta si tool no es None)."""
+    """Matrices T_{i-1,i} de cada eslabón, seguidas del marco de herramienta si lo hay."""
     q = _check_q(robot, q)
     mats = []
     for joint, qi in zip(robot.joints, q):
         theta, d = joint_params_mdh(joint, qi)
         mats.append(mdh_matrix(theta, d, joint.a, joint.alpha))
-    if tool is not None:
-        alpha, a = tool
-        mats.append(mdh_matrix(0.0, 0.0, a, alpha))
+    extra = _tool_matrix_mdh(robot, tool)
+    if extra is not None:
+        mats.append(extra)
     return mats
 
 
@@ -111,19 +125,25 @@ def mdh_to_standard_robot(robot: Robot, tool: tuple[float, float] | None = None)
     Mapeo exacto (requiere alpha_0 = a_0 = 0 en la primera articulación):
         estándar i: theta_i, d_i iguales;  (alpha_i, a_i) = (alpha_{i-1}, a_{i-1}) de la articulación i+1
         estándar n: (alpha_n, a_n) = tool (o 0 si no hay herramienta).
+    Si tool es None y robot.tool existe, la articulación n toma (alpha, a) de robot.tool y el
+    robot estándar recibe el marco fijo (theta, d, 0, 0) como herramienta.
     """
     base = robot.joints[0]
     if base.alpha != 0.0 or base.a != 0.0:
         raise ValueError("La conversión exacta requiere alpha_0 = a_0 = 0 en la primera articulación")
     n = robot.n_dof
+    use_robot_tool = tool is None and robot.has_tool
     joints = []
     for i, joint in enumerate(robot.joints):
         if i + 1 < n:
             nxt = robot.joints[i + 1]
             alpha, a = nxt.alpha, nxt.a
+        elif use_robot_tool:
+            alpha, a = robot.tool[3], robot.tool[2]
         else:
             alpha, a = tool if tool is not None else (0.0, 0.0)
         joints.append(
             Joint(joint.kind, a=a, alpha=alpha, theta=joint.theta, d=joint.d, lower=joint.lower, upper=joint.upper)
         )
-    return Robot(robot.name, tuple(joints))
+    std_tool = (robot.tool[0], robot.tool[1], 0.0, 0.0) if use_robot_tool else (0.0, 0.0, 0.0, 0.0)
+    return Robot(robot.name, tuple(joints), tool=std_tool)

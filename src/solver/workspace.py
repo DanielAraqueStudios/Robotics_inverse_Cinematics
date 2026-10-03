@@ -44,6 +44,7 @@ def max_reach(robot: Robot) -> float:
         if joint.kind == "P":
             lo, hi = _limits(joint)
             total += max(abs(lo), abs(hi))
+    total += abs(robot.tool[1]) + abs(robot.tool[2])
     return float(total)
 
 

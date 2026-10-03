@@ -83,7 +83,7 @@ def _reach_bound(robot: Robot, lb: np.ndarray, ub: np.ndarray) -> float:
         bound += abs(joint.a) + abs(joint.d)
         if joint.kind == "P":
             bound += max(abs(lo), abs(hi))
-    return bound
+    return bound + abs(robot.tool[1]) + abs(robot.tool[2])
 
 
 def _check_target(target_T) -> np.ndarray:

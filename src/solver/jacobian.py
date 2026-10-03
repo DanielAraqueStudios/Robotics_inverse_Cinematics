@@ -117,6 +117,9 @@ def _symbolic_frames(robot: Robot) -> tuple[list[sp.Matrix], list[sp.Symbol]]:
         d = sp.Float(joint.d) + (qi if joint.kind == "P" else 0)
         T = T * _sym_dh(theta, d, sp.Float(joint.a), sp.Float(joint.alpha))
         frames.append(T)
+    if robot.has_tool:
+        tt, td, ta, tal = (sp.Float(v) for v in robot.tool)
+        frames.append(T * _sym_dh(tt, td, ta, tal))
     return frames, list(qs)
 
 

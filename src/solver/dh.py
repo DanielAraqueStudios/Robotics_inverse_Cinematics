@@ -45,6 +45,8 @@ def link_matrices(robot: Robot, q) -> list[np.ndarray]:
             mats.append(dh_matrix(joint.theta + qi, joint.d, joint.a, joint.alpha))
         else:
             mats.append(dh_matrix(joint.theta, joint.d + qi, joint.a, joint.alpha))
+    if robot.has_tool:
+        mats.append(dh_matrix(*robot.tool))
     return mats
 
 

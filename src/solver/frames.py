@@ -53,6 +53,8 @@ def describe_frames(robot: Robot, q, convention: str = "modified") -> list[dict]
         }
         if i == 0:
             entry["descripcion"] = "Marco base {0}: referencia fija del robot."
+        elif i > robot.n_dof:
+            entry["descripcion"] = "Marco de herramienta (fijo)"
         else:
             joint = robot.joints[i - 1]
             k = joint_frame_index(i, convention)

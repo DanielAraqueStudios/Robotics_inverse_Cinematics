@@ -30,8 +30,12 @@ class Joint:
 
 @dataclass(frozen=True)
 class Robot:
+    """Robot serie. tool: marco fijo tras la última articulación (theta, d, a, alpha) en la
+    convención del robot; (0, 0, 0, 0) significa sin herramienta."""
+
     name: str
     joints: tuple[Joint, ...] = field(default_factory=tuple)
+    tool: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)
 
     @property
     def n_dof(self) -> int:
@@ -40,3 +44,7 @@ class Robot:
     @property
     def kinds(self) -> str:
         return "".join(j.kind for j in self.joints)
+
+    @property
+    def has_tool(self) -> bool:
+        return any(v != 0.0 for v in self.tool)
