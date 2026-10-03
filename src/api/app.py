@@ -38,7 +38,8 @@ def to_robot(payload: RobotIn) -> Robot:
         Joint(j.kind, a=j.a, alpha=j.alpha, theta=j.theta, d=j.d, lower=j.lower, upper=j.upper)
         for j in payload.joints
     )
-    return Robot(payload.name, joints)
+    tool = tuple(payload.tool) if payload.tool is not None else (0.0, 0.0, 0.0, 0.0)
+    return Robot(payload.name, joints, tool=tool)
 
 
 def rpy_to_matrix(rpy_deg: list[float]) -> np.ndarray:

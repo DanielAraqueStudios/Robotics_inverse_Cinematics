@@ -22,6 +22,14 @@ class JointIn(BaseModel):
 class RobotIn(BaseModel):
     name: str = Field(default="robot", max_length=60)
     joints: List[JointIn] = Field(min_length=1, max_length=MAX_JOINTS)
+    tool: Optional[List[float]] = None
+
+    @field_validator("tool")
+    @classmethod
+    def check_tool(cls, tool: Optional[List[float]]) -> Optional[List[float]]:
+        if tool is not None and len(tool) != 4:
+            raise ValueError("La herramienta debe tener 4 valores: theta, d, a, alpha")
+        return tool
 
     @field_validator("joints")
     @classmethod
