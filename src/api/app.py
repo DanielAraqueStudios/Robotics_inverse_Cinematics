@@ -19,6 +19,7 @@ from solver.steps import fk_steps, planar_rrr_steps
 from solver.steps_numeric import numeric_ik_steps
 
 from .schemas import ChainState, FKRequest, IKRequest, IKResponse, IKSolution, RobotIn
+from .exam import router as exam_router
 
 IK_TIMEOUT_S = 5.0
 
@@ -29,6 +30,7 @@ app.add_middleware(
     allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
 )
+app.include_router(exam_router)
 
 
 def to_robot(payload: RobotIn) -> Robot:
